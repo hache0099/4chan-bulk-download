@@ -31,12 +31,6 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-if [ -z $SELECTED ];
-then
-	echo "You must select a type of file to search/download"
-	exit 1
-fi
-
 set -- "${POSITIONAL_ARGS[@]}"
 
 LINK=$1
