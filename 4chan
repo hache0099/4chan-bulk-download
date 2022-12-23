@@ -7,7 +7,7 @@ PARALLEL_JOBS=5
 
 POSITIONAL_ARGS=()
 
-TMP_FILE="/tmp/4chan_board_list.txt"
+#TMP_FILE="/tmp/4chan_board_list.txt"
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -46,14 +46,10 @@ LINK=$1
 BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
 
 SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
-echo "Scrap link: ${SCRAP_LINK}"
-echo "Selected: ${SELECTED}"
-echo "${SCRAP_LINK}[0-9]+${SELECTED}"
-echo "Getting files..."
-curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" > $TMP_FILE
-#cat $TMP_FILE
+#echo "Scrap link: ${SCRAP_LINK}"
+#echo "Selected: ${SELECTED}"
+#echo "${SCRAP_LINK}[0-9]+${SELECTED}"
 echo "Downloading files"
-parallel --arg-file $TMP_FILE -j $PARALLEL_JOBS wget -nc "https:{}"
+curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" | \
+	parallel -j $PARALLEL_JOBS wget -q -nc "https:{}"
 
-echo "Deleting temp file"
-rm -f $TMP_FILE
