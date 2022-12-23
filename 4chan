@@ -31,6 +31,12 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+if [ -z $SELECTED ];
+then
+	echo "You must select a type of file to search/download"
+	exit 1
+fi
+
 set -- "${POSITIONAL_ARGS[@]}"
 
 LINK=$1
@@ -43,8 +49,11 @@ SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
 echo "Scrap link: ${SCRAP_LINK}"
 echo "Selected: ${SELECTED}"
 echo "${SCRAP_LINK}[0-9]+${SELECTED}"
+echo "Getting files..."
 curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" > $TMP_FILE
-cat $TMP_FILE
-parallel --arg-file $TMP_FILE -j $PARALLEL_JOBS wget -q -nc "https:{}"
+#cat $TMP_FILE
+echo "Downloading files"
+parallel --arg-file $TMP_FILE -j $PARALLEL_JOBS wget -nc "https:{}"
 
+echo "Deleting temp file"
 rm -f $TMP_FILE
