@@ -1,5 +1,27 @@
 #!/bin/bash
 
+help_text () {
+	while IFS= read -r line; do
+		printf "%s\n" "$line"
+	done <<-EOF
+
+	Usage:
+	  ${0##*/} LINK [(-img | --image) | (-vid | --video)] [ -j N]
+	
+	Options
+	  -img, --image		Only download images
+	  -vid, --video		Only download videos
+	  -j N			Number of parallel downloads 
+	  -h			Show this message and exit
+
+	EOF
+}
+
+help_text_short () {
+	echo "Usage: ${0##*/} LINK [(-img | --image) | (-vid | --video)] [ -j N]"
+	echo "Use -h for more help"
+	exit 1
+}
 IMG_SEARCH="\.(png|jpe?g)"
 VID_SEARCH="\.webm"
 SELECTED="\.(png|jpe?g|webm)"
@@ -24,6 +46,10 @@ while [ $# -gt 0 ]; do
 			shift
 			shift
 			;;
+		-h)
+			help_text
+			exit 0
+			;;
 		*)
 			POSITIONAL_ARGS+=("$1")
 			shift
@@ -32,6 +58,12 @@ while [ $# -gt 0 ]; do
 done
 
 set -- "${POSITIONAL_ARGS[@]}"
+
+if [ $# -eq 0 ];
+then
+	help_text_short
+	exit 0
+fi
 
 LINK=$1
 
