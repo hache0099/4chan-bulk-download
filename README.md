@@ -1,9 +1,15 @@
 # 4chan Bulk Downloader
 This is a small Shell script to download several images and/or videos from 4chan threads in parallel
 
+
+# Dependencies
+`curl`  
+`wget`  
+`parallel`    
+
 # Installation
 
-Just download and copy the `4chan` file into your **$PATH** (*/usr/bin/*, *home/.local/bin*, etc) and give execute permissions (`sudo chmod +x $PATH/4chan`)
+Just download and copy the `4chan` file into your **$PATH** (*/usr/bin/*, *$HOME/.local/bin*, etc) and give execute permissions (`sudo chmod +x $PATH/4chan`)
 
 # Usage
 
