@@ -2,7 +2,7 @@
 
 IMG_SEARCH="\.(png|jpe?g)"
 VID_SEARCH="\.webm"
-SELECTED=""
+SELECTED="\.(png|jpe?g|webm)"
 PARALLEL_JOBS=5
 
 POSITIONAL_ARGS=()
