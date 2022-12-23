@@ -1,0 +1,50 @@
+#!/bin/bash
+
+IMG_SEARCH="\.(png|jpe?g)"
+VID_SEARCH="\.webm"
+SELECTED=""
+PARALLEL_JOBS=5
+
+POSITIONAL_ARGS=()
+
+TMP_FILE="/tmp/4chan_board_list.txt"
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-img|--image)
+			SELECTED=$IMG_SEARCH
+			shift
+			;;
+		-vid|--video)
+			SELECTED=$VID_SEARCH
+			shift
+			;;
+		-j)
+			PARALLEL_JOBS=$2
+			shift
+			shift
+			;;
+		*)
+			POSITIONAL_ARGS+=("$1")
+			shift
+			;;
+	esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}"
+
+LINK=$1
+
+#BOARD=$(echo "${LINK}" | sed -e "s/https:\/\///" | cut -d '/' -f 2)
+
+BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
+
+SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
+echo "Scrap link: ${SCRAP_LINK}"
+echo "Selected: ${SELECTED}"
+echo "${SCRAP_LINK}[0-9]+${SELECTED}"
+curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" > $TMP_FILE
+cat $TMP_FILE
+parallel --arg-file $TMP_FILE -j $PARALLEL_JOBS wget -q -nc "https:{}"
+
+rm -f $TMP_FILE
