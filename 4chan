@@ -20,8 +20,8 @@ help_text () {
 help_text_short () {
 	echo "Usage: ${0##*/} LINK [(-img | --image) | (-vid | --video)] [ -j N]"
 	echo "Use -h for more help"
-	exit 1
 }
+
 IMG_SEARCH="\.(png|jpe?g)"
 VID_SEARCH="\.webm"
 SELECTED="\.(png|jpe?g|webm)"
