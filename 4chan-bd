@@ -22,9 +22,9 @@ help_text_short () {
 	echo "Use -h for more help"
 }
 
-IMG_SEARCH="\.(png|jpe?g)"
+IMG_SEARCH="\.(png|jpe?g|gif)"
 VID_SEARCH="\.webm"
-SELECTED="\.(png|jpe?g|webm)"
+SELECTED="\.(png|jpe?g|webm|gif)"
 PARALLEL_JOBS=5
 
 POSITIONAL_ARGS=()
