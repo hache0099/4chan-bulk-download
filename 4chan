@@ -62,7 +62,7 @@ set -- "${POSITIONAL_ARGS[@]}"
 if [ $# -eq 0 ];
 then
 	help_text_short
-	exit 0
+	exit 1
 fi
 
 LINK=$1
@@ -72,9 +72,7 @@ LINK=$1
 BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
 
 SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
-#echo "Scrap link: ${SCRAP_LINK}"
-#echo "Selected: ${SELECTED}"
-#echo "${SCRAP_LINK}[0-9]+${SELECTED}"
+
 echo "Downloading files"
 curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" | \
 	parallel -j $PARALLEL_JOBS wget -q -nc "https:{}"
