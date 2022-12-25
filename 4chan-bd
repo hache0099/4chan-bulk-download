@@ -1,0 +1,87 @@
+#!/bin/bash
+
+help_text () {
+	while IFS= read -r line; do
+		printf "%s\n" "$line"
+	done <<-EOF
+
+	Usage:
+	  ${0##*/} LINK [(-img | --image) | (-vid | --video)] [ -j N]
+	
+	Options
+	  -img, --image		Only download images
+	  -vid, --video		Only download videos
+	  -j N			Number of parallel downloads 
+	  -h			Show this message and exit
+
+	EOF
+}
+
+help_text_short () {
+	echo "Usage: ${0##*/} LINK [(-img | --image) | (-vid | --video)] [ -j N]"
+	echo "Use -h for more help"
+}
+
+IMG_SEARCH="\.(png|jpe?g)"
+VID_SEARCH="\.webm"
+SELECTED="\.(png|jpe?g|webm)"
+PARALLEL_JOBS=5
+
+POSITIONAL_ARGS=()
+
+#TMP_FILE="/tmp/4chan_board_list.txt"
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-img|--image)
+			SELECTED=$IMG_SEARCH
+			shift
+			;;
+		-vid|--video)
+			SELECTED=$VID_SEARCH
+			shift
+			;;
+		-j)
+			PARALLEL_JOBS=$2
+			shift
+			shift
+			;;
+		-h)
+			help_text
+			exit 0
+			;;
+		*)
+			POSITIONAL_ARGS+=("$1")
+			shift
+			;;
+	esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}"
+
+if [ $# -eq 0 ];
+then
+	help_text_short
+	exit 1
+fi
+
+LINK=$1
+
+#BOARD=$(echo "${LINK}" | sed -e "s/https:\/\///" | cut -d '/' -f 2)
+
+BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
+
+SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
+
+echo "Getting links"
+WEB_SCRAP=$( curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" )
+
+if [ -z "${WEB_SCRAP}" ];
+then
+	echo "Nothing was scraped"
+	exit 1
+fi
+
+echo "Downloading files"
+echo "${WEB_SCRAP}" | parallel -j $PARALLEL_JOBS wget -q -nc "https:{}"
+
