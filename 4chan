@@ -73,7 +73,15 @@ BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
 
 SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
 
+echo "Getting links"
+WEB_SCRAP=$( curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" )
+
+if [ -z "${WEB_SCRAP}" ];
+then
+	echo "Nothing was scraped"
+	exit 1
+fi
+
 echo "Downloading files"
-curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" | \
-	parallel -j $PARALLEL_JOBS wget -q -nc "https:{}"
+echo "${WEB_SCRAP}" | parallel -j $PARALLEL_JOBS wget -q -nc "https:{}"
 
