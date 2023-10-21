@@ -71,7 +71,7 @@ LINK=$1
 
 BOARD=$(echo "${LINK}" | cut -c 9- | cut -d '/' -f 2)
 
-SCRAP_LINK="\/\/i\.4cdn\.org\/${BOARD}\/"
+SCRAP_LINK="\/\/i(s2)?\.4cdn\.org\/${BOARD}\/"
 
 echo "Getting links"
 WEB_SCRAP=$( curl -s $LINK | grep -iEo "${SCRAP_LINK}[0-9]+${SELECTED}" )
